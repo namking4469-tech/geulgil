@@ -1,0 +1,4 @@
+나눔고딕(NanumGothic), 나눔명조(NanumMyeongjo)
+Copyright (c) 2010, NAVER Corporation (https://www.navercorp.com/)
+이 글꼴은 SIL Open Font License, Version 1.1 로 배포됩니다.
+https://scripts.sil.org/OFL
