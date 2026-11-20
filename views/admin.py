@@ -15,7 +15,27 @@ if not user.is_admin:
     st.stop()
 header("🛠️ 관리자", "회원과 공모전·주소록 데이터를 관리합니다. (처음 가입한 계정과 ADMIN_EMAILS 의 계정이 관리자입니다)")
 
-t_users, t_contest, t_dir = st.tabs(["회원", "공모전 DB", "에이전시 · 출판사 DB"])
+t_users, t_contest, t_dir, t_mail = st.tabs(["회원", "공모전 DB", "에이전시 · 출판사 DB", "메일 설정 확인"])
+
+with t_mail:
+    from core.config import secret
+    from core.mailer import send_mail, sender_address, smtp_ready
+    if smtp_ready():
+        st.success(f"메일 서버가 설정되어 있습니다: `{secret('SMTP_HOST')}:{secret('SMTP_PORT', 587)}` · "
+                   f"보내는 주소 `{sender_address()}`")
+        to = st.text_input("시험 메일을 받을 주소", user.email)
+        if st.button("시험 메일 보내기", type="primary"):
+            with st.spinner("보내는 중…"):
+                ok, err = send_mail(to, "[글길] 메일 설정 시험", "이 메일이 보이면 글길의 메일 발송이 정상입니다.")
+            if ok:
+                st.success(f"{to} 로 보냈습니다. 받은편지함(없으면 스팸함)을 확인해 주세요.")
+            else:
+                st.error(f"발송 실패: {err}")
+                st.caption("흔한 원인: ① 비밀번호 대신 '애플리케이션(앱) 비밀번호'가 필요함 ② 메일 서비스에서 SMTP 사용이 꺼져 있음 "
+                           "③ SMTP_HOST·SMTP_PORT 오타 ④ 보내는 주소(SMTP_FROM)가 로그인 계정과 다름")
+    else:
+        st.warning("메일 서버가 아직 설정되지 않았습니다. Streamlit 앱 설정 → Secrets 에 SMTP_HOST, SMTP_PORT, SMTP_USER, "
+                   "SMTP_PASSWORD 를 넣어 주세요. (README 의 'Secrets 설정' 참고)")
 
 with t_users:
     with db() as s:
