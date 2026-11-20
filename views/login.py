@@ -69,7 +69,7 @@ with tab_login:
         for p, cfg in auth.PROVIDERS.items():
             if auth.provider_ready(p):
                 st.markdown(
-                    f'<a href="{auth.oauth_url(p)}" target="_self" style="display:block;text-align:center;'
+                    f'<a href="{auth.oauth_url(p)}" target="_top" rel="noopener" style="display:block;text-align:center;'
                     f'padding:.6rem;margin:.35rem 0;border-radius:.5rem;background:{cfg["color"]};color:#fff;'
                     f'text-decoration:none;font-weight:600">{cfg["label"]} 계정으로 계속하기</a>',
                     unsafe_allow_html=True)
