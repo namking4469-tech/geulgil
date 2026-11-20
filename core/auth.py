@@ -175,10 +175,16 @@ export default function(component) {
 
 def flush_cookie_op():
     """app.py 가 매 실행 초기에 호출: 대기 중인 쿠키 쓰기를 브라우저에 반영."""
+    ops = []
     op = st.session_state.pop("_cookie_op", None)
     if op:
+        ops.append({"op": op[0], "name": COOKIE, "value": op[1]})
+    ui = st.session_state.pop("_ui_cookie", None)  # 화면 디자인 설정(core/theme.py)
+    if ui:
+        ops.append({"op": "set", "name": "geulgil_ui", "value": ui})
+    for i, data in enumerate(ops):
         comp = st.components.v2.component("geulgil_cookie", js=_COOKIE_JS)
-        comp(data={"op": op[0], "name": COOKIE, "value": op[1]}, key=f"ck_{time.time_ns()}")
+        comp(data=data, key=f"ck_{time.time_ns()}_{i}")
 
 
 # ---------------------------------------------------------------- 이메일 인증코드

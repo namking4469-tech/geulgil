@@ -2,7 +2,7 @@
 maxUploadSize = 100
 
 [theme]
-primaryColor = "#5B4BDB"
+primaryColor = "#6352ff"
 
 [browser]
 gatherUsageStats = false

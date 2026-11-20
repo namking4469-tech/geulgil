@@ -3,6 +3,7 @@
 """
 import streamlit as st
 
+from core import theme
 from core.auth import current_user, flush_cookie_op, handle_oauth_callback, logout
 from core.config import APP_NAME, APP_TAGLINE, using_dev_secret
 from core.db import is_persistent
@@ -16,11 +17,13 @@ if oauth_error:
 
 # 공개 작가 소개 페이지:  ?author=아이디
 if "author" in st.query_params:
+    theme.apply(None)
     from views.portfolio import render
     render(st.query_params["author"])
     st.stop()
 
 user = current_user()
+theme.apply(user)
 
 if not user:
     pg = st.navigation([st.Page("views/login.py", title="로그인 · 작가 등록", icon="🔑")], position="hidden")
@@ -61,6 +64,7 @@ with st.sidebar:
     else:
         c1.markdown("## ✒️")
     c2.markdown(f"**{user.display}**  \n{' · '.join(user.writer_types[:2]) or '작가'}")
+    theme.picker(user)
     if st.button("로그아웃", use_container_width=True):
         logout()
         st.rerun()

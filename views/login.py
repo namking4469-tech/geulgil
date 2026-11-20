@@ -3,15 +3,21 @@ from datetime import date
 
 import streamlit as st
 
-from core import auth
+from core import auth, theme
 from core.config import APP_NAME, APP_TAGLINE, WRITER_TYPES
 from core.mailer import smtp_ready
 from core.ui import square_jpeg
 
 ss = st.session_state
 
-st.markdown(f"# ✒️ {APP_NAME}")
-st.caption(f"{APP_TAGLINE} — 원고 관리부터 번역, 전자책, 홍보, 투고까지 한곳에서.")
+_ui = theme.current()
+_h1, _h2 = st.columns([4.2, 1], vertical_alignment="top")
+with _h2:
+    theme.picker(key="ui_login")
+_chips = "".join(f'<span class="g-chip">{c}</span>' for c in
+                 ["원고 자동 분석", "형식별 편집", "10개 언어 번역", "전자책 · ISBN", "SNS 홍보 영상", "공모전 · 에이전시 투고"])
+_h1.html(f'<div class="g-hero{" g-mono" if _ui["mono"] else ""}"><h1>✒️ {APP_NAME}</h1>'
+         f'<p>{APP_TAGLINE} — 쓰는 일에만 집중하세요. 나머지는 글길이 잇습니다.</p>{_chips}</div>')
 
 if ss.get("_oauth_error"):
     st.error(ss.pop("_oauth_error"))
