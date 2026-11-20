@@ -65,14 +65,14 @@ with tab_login:
     left, right = st.columns([1.2, 1], gap="large")
     with right:
         st.markdown("#### 간편 로그인 / 간편 가입")
-        st.caption("처음이면 자동으로 작가 계정이 만들어집니다.")
+        st.caption("처음이면 자동으로 작가 계정이 만들어집니다. 로그인 창은 새 탭에서 열리고, 로그인이 끝나면 그 탭에서 "
+                   "앱이 이어집니다.")
         for p, cfg in auth.PROVIDERS.items():
             if auth.provider_ready(p):
-                st.markdown(
-                    f'<a href="{auth.oauth_url(p)}" target="_top" rel="noopener" style="display:block;text-align:center;'
-                    f'padding:.6rem;margin:.35rem 0;border-radius:.5rem;background:{cfg["color"]};color:#fff;'
-                    f'text-decoration:none;font-weight:600">{cfg["label"]} 계정으로 계속하기</a>',
-                    unsafe_allow_html=True)
+                # Streamlit Cloud 는 앱을 제한된 틀(iframe) 안에 띄운다. 틀 안 이동은 로그인 제공사가 거부하고,
+                # 창 전체 이동은 틀의 제한으로 막히므로, 새 탭으로 여는 기본 링크 버튼을 쓴다.
+                st.link_button(f"{cfg['label']} 계정으로 계속하기", auth.oauth_url(p), type="primary",
+                               use_container_width=True)
             else:
                 st.button(f"{cfg['label']} 계정으로 계속하기", disabled=True, use_container_width=True, key=f"so_{p}",
                           help=f"관리자가 {p.upper()}_CLIENT_ID / {p.upper()}_CLIENT_SECRET 을 설정하면 켜집니다. (README 참고)")
